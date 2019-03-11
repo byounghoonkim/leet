@@ -36,7 +36,6 @@ import "fmt"
  */
 
 func letterCombinations(digits string) []string {
-
 	if 0 == len(digits) {
 		return make([]string, 0)
 	}
@@ -60,7 +59,6 @@ func letterCombinations(digits string) []string {
 	ret := make([]string, count)
 
 	step := count
-	fmt.Print(step)
 	for _, n := range digits {
 		step = step / len(t[string(n)])
 		for j, r := range ret {
