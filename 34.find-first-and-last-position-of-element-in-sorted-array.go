@@ -34,7 +34,7 @@
  *
  */
 
-func searchBinary(nums []int, target int) int {
+func searchBinaryVjjjj(nums []int, target int) int {
 	l := 0
 	r := len(nums) - 1
 
