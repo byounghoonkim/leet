@@ -32,21 +32,29 @@ func trap(height []int) int {
 
 	ret := 0
 
+	// 모든 요소를 순회 하면서 해당 요소에 물이 담길수 있는지 체크 하고
+	// 담길 수 있다면 용량을 측정해 더한다.
 	for i, h := range height {
 
-		l := 0
-		r := 0
+		l := 0 // 왼편에서 제일 높은 벽 높이
+		r := 0 // 오른편에서 제일 높은 벽 높이
+
+		// i 를 중심으로 왼편에서 제일 높은 벽을 찾는다.
 		for _, w := range height[:i] {
 			if w > h && w > l {
 				l = w
 			}
 		}
+
+		// i 를 중심으로 오른편에 제일 높은 벽을 찾는다.
 		for _, w := range height[i+1:] {
 			if w > h && w > r {
 				r = w
 			}
 		}
 
+		// 양측에서 찾은 벽 중 낮은 벽 높이와 i 의 높이 h 의 차이를 그 요소의
+		// 용량으로 더한다.
 		if l > h && r > h {
 			if l > r {
 				ret += r - h
@@ -57,5 +65,9 @@ func trap(height []int) int {
 	}
 
 	return ret
+
+	// 이 알고리즘은 height 의 개수 n 의 모든 요소를 순회하고
+	// 해당 순회 시 양측으로 한번씩 순회를 하므로
+	// n*n을 순회 한다. O(n^2)
 }
 
