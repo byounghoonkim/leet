@@ -51,71 +51,65 @@
  * 
  */
 
-func isRealNumber(s string) bool {
-
+func isDigit(c byte) bool  {
+	if c >= '0' && c <= '9' {
+		return true
+	}
 	return false
-}
-
-func isNatureNumber(s string) bool {
-	return false
-
-}
-
-func checkSpace(s string) bool{
-	i:= 0
-	for i = 0; i < len(s) ; i++ {
-		if s[i] == ' ' {
-			break
-		}
-	}
-
-	for ; i < len(s) ; i++ {
-		if s[i] != ' ' {
-			break
-		}
-	}
-
-	for ; i < len(s); i++ {
-		if s[i] != ' ' {
-			return false
-		}
-	}
-
-	return true
-}
-
-func trimSpace(s string) string {
-	ret := s
-	i:= 0
-
-	for ; i < len(s); i++ {
-		if s[i] != ' ' {
-			break
-		}
-	}
-
-	ret = ret[i:]
-
-	for ; i < len(s); i++ {
-		if s[i] != ' ' {
-			break
-		}
-	}
-
-	ret = ret[:i]
-
-	return ret
-
 }
 
 func isNumber(s string) bool {
-	if false == checkSpace(s) {
-		return false
+	ms := strings.TrimSpace(s)
+
+	i := 0
+	l := len(ms)
+
+	ret := false
+
+	// 부호이면 한칸 진행 
+	if i < l && (ms[i] == '+' || ms[i] == '-') {
+		i++
 	}
 
-	fmt.Println(trimSpace(s))
+	// 숫자일때까지 진행. 일단 valid 표시
+	for i< l && isDigit(ms[i]) {
+		i++
+		ret = true
+	}
 
-	return false
-    
+	// 소숫점을 만나면 한칸 진행하고 내부에서 숫자를 추가로 진행 
+	if i<l && ms[i] == '.' {
+		i++
+		// ret = false // "3." 케이스 true 로 리턴하기 위해 // 검증 데이터 오류로 보임
+		for i<l && isDigit(ms[i]) {
+			i++
+			ret = true
+		}
+	}
+
+	// 여기까지 ret 가 true 여야 e 를 체크할 수 있으므로 
+	if ret == true && i<l && ms[i] == 'e' {
+		i++
+		ret = false
+
+		// e이후에 부호 한칸 진행
+		if i < l && (ms[i] == '+' || ms[i] == '-') {
+			i++
+		}
+		// 숫자 진행
+		for i< l && isDigit(ms[i]) {
+			i++
+			ret = true
+		}
+	}
+
+
+	// 모든 체크가 끝나면 길이 끝까지 진행해야 함.
+	// 추가 문자열이 남으면 잘못된 포맷임
+	if i < l {
+		ret = false
+	} 
+
+	return ret
 }
 
