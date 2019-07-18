@@ -91,29 +91,93 @@
  * 
  * 
  */
+
+ func spaces(n int) string {
+	 str := ""
+	 for i:= 0 ; i < n ; i++ {
+		 str += " "
+	 }
+	 return str
+ }
+
+ func justify(words []string, maxWidth int) string {
+
+	if len(words) == 0 {
+		return ""
+	}
+
+	if len(words) == 1 {
+		return words[0] + spaces(maxWidth-len(words[0]))
+	}
+
+	wl := 0
+	for _, w := range(words) {
+		wl += len(w)
+	}
+
+
+	str := words[0] 
+	for i := 1; i < len(words); i++ {
+
+		sc := (maxWidth-wl) / (len(words)-1)
+		if (maxWidth-wl) % (len(words)-1) > i - 1 {
+			sc++
+		}
+
+		str += spaces(sc)
+		str += words[i]
+	}
+
+	return str
+ }
+
 func fullJustify(words []string, maxWidth int) []string {
 	ret := []string{}
 
 	wi := []int{}
-	wl := []int{}
 	w_len := 0 
-	s_len := 0
 	for i, word := range(words) {
-		if w_len + len(word) + s_len + 1 > maxWidth {
+		if w_len + len(word) >= maxWidth {
 			wi = append(wi, i)
-			wl = append(wl, w_len)
 			w_len = 0
-			s_len = 0
 		} 
 
-		if w_len != 0 {
-			s_len ++
+		if w_len > 0 {
+			w_len ++
 		}
-		w_len += len(word)
+		w_len += len(word) 
 	}
 
-	for _,i  := range(wi) {
+	for i, v := range(wi) {
+		s, e := 0, 0
+		if i == 0 {
+			s = 0
+		} else {
+			s = wi[i-1]
+		}
+		e = v
+		sub := words[s:e]
+		if len(sub) > 0 {
+			str := justify(sub, maxWidth)
+			ret = append(ret, str)
+		}
+	}
 
+	sub := words
+	if len(wi) > 0 {
+		sub = words[wi[len(wi)-1]:]
+	} 
+
+	if len(sub) > 0 {
+		str := sub[0]
+		for i:= 1 ; i < len(sub); i++ {
+			str += " "
+			str += sub[i]
+		}
+
+		str += spaces(maxWidth-len(str))
+
+		ret = append(ret, str)
 	}
 
 	return ret
