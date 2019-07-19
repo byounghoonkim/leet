@@ -40,6 +40,7 @@
  */
 func mySqrt(x int) int {
 
+	/*
 	// 앞에서 부터 올려 가면 시간이 너무 걸린다.
 	// 바이너리 서치를 해야 겠다!!!
 	for i:= 1; i <= x; {
@@ -47,9 +48,29 @@ func mySqrt(x int) int {
 			return i-1
 		}
 	}
-
+	*/
 	if x == 1 {
 		return 1
+	}
+
+	l, r := 0,x
+
+	for ;; {
+		m := (l+r) / 2
+
+		if m*m == x {
+			return m
+		}
+
+		if m*m > x {
+			r = m
+		} else {
+			if (m+1)*(m+1) > x {
+				return m
+			}
+			
+			l = m
+		}
 	}
 
 	return 0
