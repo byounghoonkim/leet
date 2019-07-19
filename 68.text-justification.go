@@ -134,6 +134,9 @@
 func fullJustify(words []string, maxWidth int) []string {
 	ret := []string{}
 
+	// 단어를 나눌 인덱스를 미리 구한다.
+	// 구하는 방법은 각 단어에 공백을 하나 추가한 길이를 더해 가며 maxWidth를 초과 하기 전까지
+	// 진행하고 초과했을 때의 인덱스를 저장하는 방식이다.
 	wi := []int{}
 	w_len := 0 
 	for i, word := range(words) {
@@ -142,12 +145,15 @@ func fullJustify(words []string, maxWidth int) []string {
 			w_len = 0
 		} 
 
+		// 0 이면 첫 단어라 공백 길이를 추가하지 않는다.
 		if w_len > 0 {
 			w_len ++
 		}
 		w_len += len(word) 
 	}
 
+	// 인덱스 슬라이스를 돌면서
+	// 구간 별 서브 워드 슬라이스를 만들어 justify 함수를 호출한다.
 	for i, v := range(wi) {
 		s, e := 0, 0
 		if i == 0 {
@@ -163,6 +169,7 @@ func fullJustify(words []string, maxWidth int) []string {
 		}
 	}
 
+	// 마지막 구간은 위에서 처리 되지 않으므로 따로 구해서 처리한다.
 	sub := words
 	if len(wi) > 0 {
 		sub = words[wi[len(wi)-1]:]
@@ -175,6 +182,8 @@ func fullJustify(words []string, maxWidth int) []string {
 			str += sub[i]
 		}
 
+		// 마지막 구간은 단어가 모자라(단어가 하나거나 등) 공백을 중간에 채워넣지 못할 수도 있다.
+		// 이때는 마지막에 공백을 다 채워서 justify 해 주어야 검증 시 pass 된다.
 		str += spaces(maxWidth-len(str))
 
 		ret = append(ret, str)
