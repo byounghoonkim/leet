@@ -34,79 +34,69 @@
  * 
 
  "ADOBECODEBANC", T = "ABC"
-  1         1
-	 1     1   
-	   1      1
+  l
+  r
+
+  l--->r
+   l   r
+   l    --->r
+   --->l    r
+	   l     ->r
+	   -------lr
 
  */
 
-func minMax(t []int) (int, int) {
-	min, max := t[0], t[0]
-
-	for _, a := range(t) {
-		if min > a {
-			min = a
-		}
-		if max < a {
-			max = a
-		}
-	}
-
-	return min, max
-}
-
-func spanLen(t []int) int {
-	min, max := minMax(t)
-	return max - min
-}
-
-func findWindow(m [][]int, t []int, min *int, r *[]int ) {
-	if 0 == len(m) {
-		if *min == -1 || *min > spanLen(t) {
-			*min = spanLen(t)
-			*r = make([]int, len(t))
-			copy(*r,t)
-		}
-		return
-	}
-
-	for _, a := range(m[0]) {
-		findWindow(m[1:], append(t, a), min, r)
-	}
-}
+ func isCover(m map[byte]int) bool {
+	 // 커버가 된 것을 판단 하는 것은 맵의 모든 값이 0 이하여야 한다. (0 이하라는 것이 중요하다. 0이 아니라.)
+	 // 마이너스 값이 될 수 있는데 t 에 속한 문자가 s 에 다수개 포함되면 마이너스 이다.
+	 for _, a := range(m) {
+		 if a > 0 { return false }
+	 }
+	 return true
+ }
 
 func minWindow(s string, t string) string {
+	l, r := 0,0
+	left, right := 0,0
 
-	m := make([][]int, len(t))
+	// target 문자열의 각 문자를 키로 하고 갯수를 값으로 하는 맵을 생성한다.
+	m := map[byte]int{}
+	for i:=0; i < len(t); i++ {
+		m[t[i]] ++
+	}
 
+	// 짧은 길이를 기억하는 변수
+	min_len := -1
 
-	for i, sc := range(s) {
-		for j, tc := range(t) {
-			if sc == tc {
-				m[j] = append(m[j], i)
+	// 왼쪽 인덱스가 끝까지 진행할 때까지 진행
+	for l < len(s)  {
+		// 커버가 되거나 오른쪽 인덱스가 끝까지 갔으면 
+		if isCover(m) || r == len(s) {
+			// 커버 되면 양편 인덱스 길이를 계산해서 min 보다 작으면 리턴 값으로 기억
+			if isCover(m) {
+				if min_len == -1 || r-l < min_len {
+					min_len = r-l 
+					left, right = l, r
+				}
 			}
+
+			// 왼편 인덱스의 현재 가리키는 문자를 맵에서 증가 시킴
+			if _, exist := m[s[l]]; exist {
+				m[s[l]] ++
+			}
+
+			l++
+
+		} else {
+			// 커버 되지 않은 상태이면 오른쪽 인덱스의 문자열을 맵에서 감소 시킴
+			if _, exist := m[s[r]]; exist {
+				m[s[r]] --
+			}
+			r++
 		}
+
 	}
 
-
-	for _, a := range(m) {
-		if len(a) == 0 {
-			return ""
-		}
-	}
-
-
-	min := -1
-	ret := []int{}
-
-	findWindow(m, []int{}, &min, &ret)
-
-	min, max := minMax(ret)
-
-	if max+1 - min < len(m) {
-		return ""
-	}
-	
-	return s[min:max+1]
+	return s[left:right]
 }
 
