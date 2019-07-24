@@ -45,11 +45,11 @@ func (r *Result)helper(nums []int, temp []int)  {
 	}
 
 	for i, n := range(nums) {
-		r := append(temp, n)
-		rclone := make([]int, len(r))
-		copy(rclone, r)
+		rtemp := append(temp, n)
+		rclone := make([]int, len(rtemp))
+		copy(rclone, rtemp)
 		*r = append(*r, rclone)
-		r.helper(nums[i+1:], r)
+		r.helper(nums[i+1:], rtemp)
 	}
 	
 }
