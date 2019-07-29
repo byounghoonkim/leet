@@ -37,9 +37,10 @@
  */
 
 
-func search(board [][]byte, word string, i, j, d, pi,pj int) bool {
-
-	fmt.Println(i,j,d, board[i][j])
+func search(board [][]byte, word string, i, j, d int, visit [][]bool) bool {
+	if visit[i][j] == true {
+		return false
+	}
 
 	if board[i][j] != word[d] {
 		return false
@@ -49,35 +50,46 @@ func search(board [][]byte, word string, i, j, d, pi,pj int) bool {
 		return true
 	}
 
-	if i-1 >= 0 && i-1 != pi {
-		if search(board, word, i-1, j, d+1, i,j) {
+	visit[i][j] = true 
+
+	if i-1 >= 0 {
+		if search(board, word, i-1, j, d+1, visit) {
 			return true
 		}
 	}
-	if j + 1 < len(board[0]) && j+1 != pj {
-		if search(board, word, i, j+1, d+1, i,j) {
+	if j + 1 < len(board[0]) {
+		if search(board, word, i, j+1, d+1, visit) {
 			return true
 		}
 	}
-	if i+1 < len(board) && i+1 != pi {
-		if search(board, word, i+1, j, d+1, i,j) {
+	if i+1 < len(board) {
+		if search(board, word, i+1, j, d+1, visit) {
 			return true
 		}
 	}
-	if j-1 >= 0 && j-1 != pj {
-		if search(board, word, i, j-1, d+1, i,j) {
+	if j-1 >= 0 {
+		if search(board, word, i, j-1, d+1, visit) {
 			return true
 		}
 	}
+
+	visit[i][j] = false
 	
 	return false
 }
 
 func exist(board [][]byte, word string) bool {
 
+
 	for i, b:= range board {
 		for j, _:= range b {
-			if search(board, word, i,j,0, i,j) {
+
+			visit := make([][]bool, len(board))
+			for i, _ := range board {
+				visit[i] = make([]bool, len(board[0]))
+			}
+
+			if search(board, word, i,j,0, visit) {
 				return true
 			}
 		}
