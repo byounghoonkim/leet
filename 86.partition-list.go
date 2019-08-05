@@ -12,34 +12,44 @@
  */
 func partition(head *ListNode, x int) *ListNode {
 
-	var cur *ListNode
-	var pre *ListNode
 	var first *ListNode
+	var first_last *ListNode
+	var second *ListNode
+	var second_last *ListNode
 
-	cur = head
-	for ; cur != nil ; {
-		fmt.Println(cur)
-		var next *ListNode
+	cur := head
+	for cur != nil {
+
 		if cur.Val < x {
-			if pre != nil {
-				pre.Next = cur.Next
-			} 
-
-			next = cur.Next
-			if first != nil {
-				cur.Next = first.Next
-				first.Next = cur
-			}  else {
+			if first == nil {
 				first = cur
+				first_last = cur
+			} else {
+				first_last.Next = cur
+				first_last = cur
 			}
-			cur = next
 		} else {
-			pre = cur
-			cur = cur.Next
+			if second == nil {
+				second = cur
+				second_last = cur
+			} else {
+				second_last.Next = cur
+				second_last = cur
+			}
 		}
+
+		temp := cur.Next
+		cur.Next = nil
+		cur = temp
 	}
 
-	fmt.Println(first)
+	if first_last != nil {
+		first_last.Next = second
+	} else {
+		if second != nil {
+			first = second
+		}
+	}
 
 	return first
 }
