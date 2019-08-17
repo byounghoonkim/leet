@@ -48,15 +48,43 @@
  * }
  */
 
-func gen(depth int, temp TreeNode, result []*TreeNode) {
-
-	if depth == 0 {
-		*result = append(*result)
+func gen(n int, b int) []*TreeNode {
+	if n == 0 {
+		return []*TreeNode{nil}
+	}
+	if n == 1 {
+		return []*TreeNode{{Val: b}}
 	}
 
+	result := []*TreeNode{}
+
+	for i := 0; i < n; i++ {
+
+		lefts := gen(i, b)
+		rights := gen(n-1-i, b+i+1)
+
+		for _, l := range lefts {
+			for _, r := range rights {
+				node := TreeNode{
+					Val:   b + i,
+					Left:  l,
+					Right: r,
+				}
+
+				result = append(result, &node)
+			}
+		}
+	}
+
+	return result
 }
 
 func generateTrees(n int) []*TreeNode {
 
+	if n == 0 {
+		return []*TreeNode{}
+	}
+
+	return gen(n, 1)
 }
 
