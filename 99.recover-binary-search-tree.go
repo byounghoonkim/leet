@@ -74,43 +74,47 @@
  * }
  */
 
-func recover(root *TreeNode, min, max *TreeNode) *TreeNode {
-	if root == nil {
-		return nil
-	}
-	if min != nil && min.Val >= root.Val {
-		return root
-	}
-	if max != nil && max.Val <= root.Val {
-		return root
-	}
+ func travel(root *TreeNode, arr *[]*TreeNode) {
+	 if root.Left == nil && root.Right == nil {
+		*arr = append(*arr, root)
+		return
+	 }
 
-	l := recover(root.Left, min, root)
-	r := recover(root.Right, root, max)
+	 if root.Left != nil {
+		 travel(root.Left, arr)
+	 }
 
-	if l != nil && r != nil {
-		l.Val, r.Val = r.Val, l.Val
-	} else {
-		if l != nil {
-			if l.Val > root.Val {
-				l.Val, root.Val = root.Val, l.Val
-			} else {
-				return l
+	*arr = append(*arr, root)
+	 if root.Right != nil {
+		 travel(root.Right, arr)
+	 }
+
+ }
+func recoverTree(root *TreeNode) {
+	arr := []*TreeNode{}
+	travel(root, &arr)
+
+	s1 := -1
+	s2 := -1
+	for i:= 0; i < len(arr); i++ {
+		fmt.Println(arr[i].Val)
+		if i > 0 {
+			if arr[i].Val < arr[i-1].Val {
+				if s1 == -1 {
+					s1 = i
+				} else {
+					s2 = i
+				}
 			}
-		} else if r != nil {
-			if r.Val < root.Val {
-				r.Val, root.Val = root.Val, r.Val
-			} else {
-				return r
-			}
-		} else {
-			// ?
 		}
 	}
-	return nil
-}
 
-func recoverTree(root *TreeNode) {
-	recover(root, nil, nil)
+	if s1 != -1 {
+		if s2 == -1 {
+			arr[s1-1].Val, arr[s1].Val = arr[s1].Val, arr[s1-1].Val
+		} else {
+			arr[s1-1].Val, arr[s2].Val = arr[s2].Val, arr[s1-1].Val
+		}
+	}
 }
 
