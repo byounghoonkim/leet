@@ -1,4 +1,4 @@
-# leet
+# leetcode 풀이 연습장
 
 leecode를 스스로 풀어 저장하는 공간 입니다.
 
